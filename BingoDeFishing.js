@@ -29,6 +29,14 @@ const BINGO_IDX_MAX = 25;
 const TABLE_VALUE_STR_LIST = ["未定", "エサ1", "エサ2", "エサ3", "エサ4",
 							  "エサ5", "コイン1", "コイン5", "コイン10"]
 
+const FISH_TYPE1 = 1;
+const FISH_TYPE2 = 2;
+const FISH_TYPE3 = 3;
+
+const FISH_NAME_LIST = ["魚A1", "魚B2" , "魚C3"];
+
+
+
 g_FlipIdx = 0;
 g_TableArray1 = [];
 g_ConfirmedSquare = [ [0, 1, 0, 0, 0],
@@ -48,7 +56,9 @@ for(var i=0; i<TABLE_ROW; i++){
 
 class User {
 
-	Coin = 100;
+	HavingFishingBites = [0, 0, 0, 0, 0];
+	HavingFish = [0, 0, 0]
+	Coin = 0;
 
 
 }
@@ -124,11 +134,14 @@ var SEFunc1 = function StepExecute(){
 	g_FlipIdx = g_FlipIdx + 1;
 	if(g_FlipIdx >= BINGO_IDX_MAX){
 
+		clearBingoLog();
 		AddTableBonusOnlyOneCell();
 		JudgeBingoHits();
 
 		g_FlipIdx = 0;
 		showInitSquare();
+		
+		
 	}
 	FlipOneSquare(g_FlipIdx);
 
@@ -143,7 +156,73 @@ var SEFunc1 = function StepExecute(){
 }
 
 
+function clearBingoLog(){
+	elem1 = document.getElementById("BingoLogSpan1");
+	elem1.innerHTML = "";
+	
+}
+
+function addBingoLog(str1){
+	elem1 = document.getElementById("BingoLogSpan1");
+	
+	elemText1 = elem1.innerHTML;
+	elem1.innerHTML = "<span>" + str1 + "</span> <br>" + elemText1
+	
+}
+
 function AddTableBonusOnlyOneCell(){
+
+	for(i=0; i<TABLE_ROW; i++){
+		for(j=0; j<TABLE_COL; j++){
+			if(isFishingBiteIdx(g_TableArray1[i][j])){
+				MyUser.HavingFishingBites[ getFishingBiteIdxFromTableValue(g_TableArray1[i][j] )] += 1
+				
+				str2 = TABLE_VALUE_STR_LIST[ g_TableArray1[i][j] ]
+				str2 += "を手に入れた"
+				addBingoLog(str2);
+				
+			}else{
+				vol1 = getAddCoinVolFromTableValue(g_TableArray1[i][j]);
+				
+				MyUser.Coin += vol1;
+				
+				str2 = "コインを " + String(vol1) + " 手に入れた"
+				addBingoLog(str2);
+				
+			}
+		}
+	}
+	
+	
+}
+
+function getAddCoinVolFromTableValue(idx){
+	switch(idx){
+		case TABLE_VALUE_C1:
+			return 1;
+		case TABLE_VALUE_C2:
+			return 5;
+		case TABLE_VALUE_C3:
+			return 10;
+	}		
+	return 0;
+}
+
+function isFishingBiteIdx(idx){
+
+	switch(idx){
+		case TABLE_VALUE_V1:
+		case TABLE_VALUE_V2:
+		case TABLE_VALUE_V3:
+		case TABLE_VALUE_V4:
+		case TABLE_VALUE_V5:
+			return true;
+	}		
+	return false;
+	
+}
+function getFishingBiteIdxFromTableValue(idx){
+	return idx-1
 }
 
 function JudgeBingoHits(){
