@@ -28,6 +28,9 @@ const BINGO_IDX_MAX = 25;
 
 const TABLE_VALUE_STR_LIST = ["未定", "エサ1", "エサ2", "エサ3", "エサ4",
 							  "エサ5", "コイン1", "コイン5", "コイン10"]
+							  
+const TABLE_VALUE_COLOR_LIST = ["#ffffff", "#e6e6fa", "#fafad2", "#ff6347", "#3cb371",
+								"#87cefa", "#ed853f", "#ee82ee", "#9acd32", "#ffc0cb"];
 
 const UNCHECKED = 0;
 const CHECKED = 1;
@@ -521,7 +524,7 @@ function FlipOneSquare(sqIdx){
 	}
 	elem1.innerHTML= "<span>" + headStr1 + TABLE_VALUE_STR_LIST[ g_TableArray1[row1][col1] ] + "</span>"
 	
-	elem1.style.backgroundColor = "#b0c4de"
+	elem1.style.backgroundColor = TABLE_VALUE_COLOR_LIST[ g_TableArray1[row1][col1] ]
 	
 	return
 }
