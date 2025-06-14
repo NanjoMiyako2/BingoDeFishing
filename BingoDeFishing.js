@@ -44,10 +44,10 @@ const FISH_NAME_LIST = ["魚A1", "魚B2" , "魚C3"];
 g_FlipIdx = 0;
 g_TableArray1 = [];
 g_ConfirmedSquare = [ [0, 1, 0, 0, 0],
-					  [0, 0, 3, 1, 0],
-					  [0, 0, 0, 1, 0],
-					  [0, 1, 4, 0, 0],
-					  [0, 0, 1, 2, 1] ]
+					  [0, 0, 0, 0, 0],
+					  [1, 1, 1, 1, 1],
+					  [0, 0, 4, 0, 0],
+					  [2, 0, 1, 2, 0] ]
 
 
 var g_TableArray1 = [];
@@ -230,6 +230,153 @@ function getFishingBiteIdxFromTableValue(idx){
 }
 
 function JudgeBingoHits(){
+	JudgeLeftDownHit();
+	JudgeRightDownHit();
+	JudgeVerticalHit();
+	JudgeHorizontalHit();
+}
+
+function JudgeHorizontalHit(){
+
+	checkedArray = [];
+	for(var i=0; i<TABLE_ROW; i++){
+	  checkedArray[i] = [];
+	  for(var j=0; j<TABLE_COL; j++){
+	   checkedArray[i][j] = UNCHECKED;
+	  }
+	}
+	
+	for(i=0; i<TABLE_ROW; i++){
+		for(j=0; j<TABLE_COL-3; j++){
+			if(checkedArray[i][j] == UNCHECKED){
+				checkedArray[i][j] = CHECKED;
+				pivotVal = g_TableArray1[i][j];
+				
+				if(pivotVal == g_TableArray1[i][j+1] &&
+				   pivotVal == g_TableArray1[i][j+2] ){
+				   checkedArray[i][j+1] = CHECKED;
+				   checkedArray[i][j+2] = CHECKED;
+				   
+				   	if(j+3 < TABLE_COL &&
+				   	   pivotVal == g_TableArray1[i][j+3]){
+				   	   checkedArray[i][j+3] = CHECKED;
+				   	   
+				   	   if(j+4 < TABLE_COL &&
+				   	   	  pivotVal == g_TableArray1[i][j+4]){
+				   	   	  	checkedArray[i][j+4] = CHECKED;
+				   	   	  	addBonus(i, j, 5);
+				   	   	  	
+				   	   }else{
+				   	   		addBonus(i, j, 4);
+				   	   }
+				   	   
+				   	   
+				   	
+				   	}else{
+				   		addBonus(i, j, 3);
+				   	}
+				   
+				}
+			}
+		}
+	}
+
+}
+
+function JudgeVerticalHit(){
+
+
+	checkedArray = [];
+	for(var i=0; i<TABLE_ROW; i++){
+	  checkedArray[i] = [];
+	  for(var j=0; j<TABLE_COL; j++){
+	   checkedArray[i][j] = UNCHECKED;
+	  }
+	}
+	
+	for(i=0; i<TABLE_ROW-3; i++){
+		for(j=0; j<TABLE_COL; j++){
+			if(checkedArray[i][j] == UNCHECKED){
+				checkedArray[i][j] = CHECKED;
+				pivotVal = g_TableArray1[i][j];
+				
+				if(pivotVal == g_TableArray1[i+1][j] &&
+				   pivotVal == g_TableArray1[i+2][j] ){
+				   checkedArray[i+1][j] = CHECKED;
+				   checkedArray[i+2][j] = CHECKED;
+				   
+				   	if(i+3 < TABLE_ROW &&
+				   	   pivotVal == g_TableArray1[i+3][j]){
+				   	   checkedArray[i+3][j] = CHECKED;
+				   	   
+				   	   if(i+4 < TABLE_ROW &&
+				   	   	  pivotVal == g_TableArray1[i+4][j]){
+				   	   	  	checkedArray[i+4][j] = CHECKED;
+				   	   	  	addBonus(i, j, 5);
+				   	   	  	
+				   	   }else{
+				   	   		addBonus(i, j, 4);
+				   	   }
+				   	   
+				   	   
+				   	
+				   	}else{
+				   		addBonus(i, j, 3);
+				   	}
+				   
+				}
+			}
+		}
+	}
+
+}
+
+function JudgeRightDownHit(){
+
+	checkedArray = [];
+	for(var i=0; i<TABLE_ROW; i++){
+	  checkedArray[i] = [];
+	  for(var j=0; j<TABLE_COL; j++){
+	   checkedArray[i][j] = UNCHECKED;
+	  }
+	}
+	
+	for(i=0; i<TABLE_ROW-3; i++){
+		for(j=0; j<TABLE_COL-3; j++){
+			if(checkedArray[i][j] == UNCHECKED){
+				checkedArray[i][j] = CHECKED;
+				pivotVal = g_TableArray1[i][j];
+				
+				if(pivotVal == g_TableArray1[i+1][j+1] &&
+				   pivotVal == g_TableArray1[i+2][j+2] ){
+				   checkedArray[i+1][j+1] = CHECKED;
+				   checkedArray[i+2][j+2] = CHECKED;
+				   
+				   	if(i+3 < TABLE_ROW &&
+				   	   pivotVal == g_TableArray1[i+3][j+3]){
+				   	   checkedArray[i+3][j+3] = CHECKED;
+				   	   
+				   	   if(i+4 < TABLE_ROW &&
+				   	   	  pivotVal == g_TableArray1[i+4][j+4]){
+				   	   	  	checkedArray[i+4][j+4] = CHECKED;
+				   	   	  	addBonus(i, j, 5);
+				   	   	  	
+				   	   }else{
+				   	   		addBonus(i, j, 4);
+				   	   }
+				   	   
+				   	   
+				   	
+				   	}else{
+				   		addBonus(i, j, 3);
+				   	}
+				   
+				}
+			}
+		}
+	}
+	
+
 }
 
 function JudgeLeftDownHit(){
@@ -260,7 +407,7 @@ function JudgeLeftDownHit(){
 				   	   
 				   	   if(i+4 < TABLE_ROW &&
 				   	   	  pivotVal == g_TableArray1[i+4][j-4]){
-				   	   	  	cheackedArray[i+4][j-4] = CHECKED;
+				   	   	  	checkedArray[i+4][j-4] = CHECKED;
 				   	   	  	addBonus(i, j, 5);
 				   	   	  	
 				   	   }else{
@@ -281,6 +428,46 @@ function JudgeLeftDownHit(){
 
 
 function addBonus(row, col, level){
+	str2 = String(level) + "ヒット!"
+	addBingoLog(str2);
+	
+	str2 =  "ヒット位置:: 行:" + String(row) + ", 列:" + String(col);
+	addBingoLog(str2);
+	
+	
+	pt1 = 0;
+	
+
+	
+	if(isFishingBiteIdx(g_TableArray1[row][col])){
+		if(level == 3){
+			pt1 = 5;
+			MyUser.HavingFishingBites[ getFishingBiteIdxFromTableValue(g_TableArray1[row][col] )] += 5
+		}else if(level == 4){
+			pt1 = 10;
+			MyUser.HavingFishingBites[ getFishingBiteIdxFromTableValue(g_TableArray1[row][col] )] += 10
+		}else if(level == 5){
+			pt1 = 20;
+			MyUser.HavingFishingBites[ getFishingBiteIdxFromTableValue(g_TableArray1[row][col] )] += 20
+		}
+		
+	}else{
+		if(level == 3){
+			pt1 = 5;
+			MyUser.Coin += 5;
+		}else if(level == 4){
+			pt1 = 10;
+			MyUser.Coin += 10;
+		}else if(level == 5){
+			pt1 = 20;
+			MyUser.Coin += 20;
+		}
+	}
+	
+	str2 = "ボーナスポイント" + String(pt1) + "をゲット!"
+	addBingoLog(str2);
+	
+	
 }
 
 function RemoveRouletteValueBtns(){
