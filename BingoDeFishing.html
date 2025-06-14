@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ビンゴで釣り</title>
+     <link rel="stylesheet" href="style.css">
+    
+  </head>
+  <body>
+
+
+
+
+    <div class="tab-group">
+        <!--タブ-->
+        <ul class="tab-button">
+            <li class="tab tab-01 is-active">ビンゴ</li>
+            <li class="tab tab-02">釣り</li>
+            <li class="tab tab-03">釣った魚を売る</li>
+            <li class="tab tab-04">釣り餌を買う</li>
+            <li class="tab tab-05">今日の釣果</li>
+            <li class="tab tab-06">セーブ・ロード</li>
+            <li class="tab tab-07">持っている釣り餌</li>
+        </ul>
+
+        <!--タブを切り替えて表示するコンテンツ-->
+        <div class="tab-contents">
+        
+            <div class="content tab-01 is-display">
+				ビンゴ<br>
+				
+				 <table border="1" id="BingoTable1" width="600" height="300">
+				    <tr>
+				      <td id="BingoTableSquare1_1"></td> <td id="BingoTableSquare1_"></td> <td id="BingoTableSquare1_"></td> <td id="BingoTableSquare1_"></td> <td id="BingoTableSquare1_"></td>
+				    </tr>
+				    <tr>
+				      <td id="BingoTableSquare2_1"></td> <td id="BingoTableSquare2_2"></td> <td id="BingoTableSquare2_3"></td> <td id="BingoTableSquare2_4"></td> <td id="BingoTableSquare2_5"></td>
+				    </tr>
+				    <tr>
+				      <td id="BingoTableSquare3_1"></td> <td id="BingoTableSquare3_2"></td> <td id="BingoTableSquare3_3"></td> <td id="BingoTableSquare3_4"></td> <td id="BingoTableSquare3_5"></td>
+				    </tr>
+				    <tr>
+				      <td id="BingoTableSquare4_1"></td> <td id="BingoTableSquare4_2"></td> <td id="BingoTableSquare4_3"></td> <td id="BingoTableSquare4_4"></td> <td id="BingoTableSquare4_5"></td>
+				    </tr>
+				    <tr>
+				      <td id="BingoTableSquare5_1"></td> <td id="BingoTableSquare5_2"></td> <td id="BingoTableSquare5_3"></td> <td id="BingoTableSquare5_4"></td> <td id="BingoTableSquare5_5"></td>
+				    </tr>
+				    				    
+				  </table>
+            </div>
+            
+            <div class="content tab-02">
+            	釣り<br>
+            </div>
+            
+            <div class="content tab-03">
+            	釣った魚を売る<br>
+
+			    
+            </div>
+            
+            <div class="content tab-04">
+            	釣り餌を買う<br>
+            	
+			    
+            </div>
+            
+            <div class="content tab-05">
+            	今日の釣果<br>
+            </div>
+            
+            
+            <div class="content tab-06">
+            	セーブ・ロード<br>
+            	
+            	<button onClick="save()" type="button">セーブ</button><br>
+            	<hr>
+            	<hr>
+            	<hr>
+            	
+            	<br>
+            	<br>
+            	<br>
+			  	<form id="myform1">
+			    	<input id="myfile1" type="file" />ロードするファイルを選択<br>
+			  	</form>
+			  	<br>
+			  	<br>
+			  	<br>
+			  	
+            	<button onClick="load()" type="button">ロード</button><br>
+            	
+            	<span id="kankinSpan1"></span><br>
+            </div>
+            
+            <div class="content tab-07">
+				持っている釣り餌
+            	
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <script src="BingoDeFishing.js"></script>
+  </body>
+</html>
