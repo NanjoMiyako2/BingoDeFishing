@@ -29,6 +29,10 @@ const BINGO_IDX_MAX = 25;
 const TABLE_VALUE_STR_LIST = ["未定", "エサ1", "エサ2", "エサ3", "エサ4",
 							  "エサ5", "コイン1", "コイン5", "コイン10"]
 
+const UNCHECKED = 0;
+const CHECKED = 1;
+
+
 const FISH_TYPE1 = 1;
 const FISH_TYPE2 = 2;
 const FISH_TYPE3 = 3;
@@ -228,6 +232,57 @@ function getFishingBiteIdxFromTableValue(idx){
 function JudgeBingoHits(){
 }
 
+function JudgeLeftDownHit(){
+	
+	checkedArray = [];
+	for(var i=0; i<TABLE_ROW; i++){
+	  checkedArray[i] = [];
+	  for(var j=0; j<TABLE_COL; j++){
+	   checkedArray[i][j] = UNCHECKED;
+	  }
+	}
+
+
+	for(i=0; i<TABLE_ROW-3; i++){
+		for(j=2; j<TABLE_COL; j++){
+			if(checkedArray[i][j] == UNCHECKED){
+				checkedArray[i][j] = CHECKED;
+				pivotVal = g_TableArray1[i][j];
+				
+				if(pivotVal == g_TableArray1[i+1][j-1] &&
+				   pivotVal == g_TableArray1[i+2][j-2] ){
+				   checkedArray[i+1][j-1] = CHECKED;
+				   checkedArray[i+2][j-2] = CHECKED;
+				   
+				   	if(i+3 < TABLE_ROW &&
+				   	   pivotVal == g_TableArray1[i+3][j-3]){
+				   	   checkedArray[i+3][j-3] = CHECKED;
+				   	   
+				   	   if(i+4 < TABLE_ROW &&
+				   	   	  pivotVal == g_TableArray1[i+4][j-4]){
+				   	   	  	cheackedArray[i+4][j-4] = CHECKED;
+				   	   	  	addBonus(i, j, 5);
+				   	   	  	
+				   	   }else{
+				   	   		addBonus(i, j, 4);
+				   	   }
+				   	   
+				   	   
+				   	
+				   	}else{
+				   		addBonus(i, j, 3);
+				   	}
+				   
+				}
+			}
+		}
+	}
+}
+
+
+function addBonus(row, col, level){
+}
+
 function RemoveRouletteValueBtns(){
 
 	for(i=0; i<ROULETTE_SQUARE_NUM; i++){
@@ -283,6 +338,8 @@ function FlipOneSquare(sqIdx){
 	
 	return
 }
+
+
 
 function showInitSquare(){
 
