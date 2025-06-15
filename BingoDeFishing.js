@@ -35,6 +35,11 @@ const TABLE_VALUE_COLOR_LIST = ["#ffffff", "#e6e6fa", "#fafad2", "#ff6347", "#3c
 const UNCHECKED = 0;
 const CHECKED = 1;
 
+const CONFIRM_SQ_NUMBER = 25;
+
+const CONFIRM_SQ_MIN = 3;
+const CONFIRM_SQ_MAX = 9;
+
 
 const FISH_TYPE1 = 1;
 const FISH_TYPE2 = 2;
@@ -46,12 +51,13 @@ const FISH_NAME_LIST = ["魚A1", "魚B2" , "魚C3"];
 
 g_FlipIdx = 0;
 g_TableArray1 = [];
-g_ConfirmedSquare = [ [0, 1, 0, 0, 0],
+g_ConfirmedSquare = [ [0, 0, 0, 0, 0],
 					  [0, 0, 0, 0, 0],
-					  [1, 1, 1, 1, 1],
-					  [0, 0, 4, 0, 0],
-					  [2, 0, 1, 2, 0] ]
+					  [0, 0, 0, 0, 0],
+					  [0, 0, 0, 0, 0],
+					  [0, 0, 0, 0, 0] ]
 
+g_ConfirmedSquareCount = 0;
 
 var g_TableArray1 = [];
 for(var i=0; i<TABLE_ROW; i++){
@@ -487,6 +493,7 @@ function RemoveRouletteValueBtns(){
 	return;
 }
 
+
 function ResetBingoTable(){
 
 	for(i=0; i<TABLE_ROW; i++){
@@ -521,8 +528,15 @@ function FlipOneSquare(sqIdx){
 	headStr1 = "";
 	if(g_ConfirmedSquare[row1][col1] != TABLE_VALUE_MITEI){
 		headStr1 = "確定マス<br>"
+		
 	}
-	elem1.innerHTML= "<span>" + headStr1 + TABLE_VALUE_STR_LIST[ g_TableArray1[row1][col1] ] + "</span>"
+	elem1.innerHTML= "<span>" + headStr1 + TABLE_VALUE_STR_LIST[ g_TableArray1[row1][col1] ] + "</span><br>"
+
+	if(headStr1 != ""){
+		elem1.innerHTML +=  makeRouletteBtnTagStr();
+	}
+	
+	
 	
 	elem1.style.backgroundColor = TABLE_VALUE_COLOR_LIST[ g_TableArray1[row1][col1] ]
 	
@@ -542,18 +556,125 @@ function showInitSquare(){
 			
 			if(g_ConfirmedSquare[i][j] == TABLE_VALUE_MITEI){
 				elem1.innerHTML= "<span>未定</span>"
+				
+				elem1.style.backgroundColor = "#ffffff"
 			}else{
+			
+				
 				str1 = "確定マス<br>";
-				str1 += TABLE_VALUE_STR_LIST[ g_ConfirmedSquare[i][j] ]
-				str1 =  "<span>" + str1 + "</span>"
+				str1 += TABLE_VALUE_STR_LIST[ g_TableArray1[i][j] ]
+				str1 =  "<span>" + str1 + "</span><br>"
 				elem1.innerHTML = str1;
+				
+				str2 = makeRouletteBtnTagStr();
+				elem1.innerHTML += str2
+				
+				
+				elem1.style.backgroundColor = TABLE_VALUE_COLOR_LIST[ g_TableArray1[i][j] ]
+				
 			}
 			
-			elem1.style.backgroundColor = "#ffffff"
+			
 			
 		}
 	}	
 }
+
+function makeRouletteArray(percentArray){
+	sum_total = 0;
+	percentSumArray = [];
+	
+	for(i=0; i<percentArray.length; i++){
+		sum_total += percentArray[i];
+		percentSumArray += sum_total;
+	}
+	return percentSumArray;
+}
+
+function Roulette2(percentSumArray){
+	sum_total1 = percentSumArray[percentSumArray.length-1];
+	min1 = 0;
+	
+	randNum = getRandom(min1, sum_total1);
+	idx = 0;
+	
+	for(j=0; j<percentSumArray.length; j++){
+		if(randNum <= percentSumArray[j]){
+			idx = j;
+			return idx;
+		}
+	}
+	
+	idx = j;
+	return idx
+	
+}
+
+function InitConfirmedSquare(){
+	g_ConfirmedSquareCount = getRandom(CONFIRM_SQ_MIN, CONFIRM_SQ_MAX);
+	
+	idxArray = [];
+	for(i=0; i<CONFIRM_SQ_NUMBER; i++){
+		idxArray.push(i)
+	}
+	
+	for(k2=0; k2<TABLE_ROW; k2++){
+		for(k3=0; k3<TABLE_COL; k3++){
+			g_ConfirmedSquare[k2][k3] = TABLE_VALUE_MITEI;
+		}
+	}
+	
+	
+	retValArray = PickUpArray(idxArray, g_ConfirmedSquareCount);
+	
+	for(j=0; j<retValArray.length; j++){
+		row1 = getRow(retValArray[j]);
+		col1 = getCol(retValArray[j]);
+		rVal = getRandom(TABLE_VALUE_V1, TABLE_VALUE_C3)
+		g_ConfirmedSquare[row1][col1] = rVal
+		
+
+		
+	}
+}
+
+function InitRouletteBtnOfConfirmedSquare(){
+
+	RouletteValueBtnIdx = 1;
+	
+	for(i=0; i<TABLE_ROW; i++){
+		for(j=0; j<TABLE_COL; j++){
+			if(g_ConfirmedSquare[i][j] != TABLE_VALUE_MITEI){
+				parentElemIdStr1 = "BingoTableSquare" + String((i+1))+ "_" + String((j+1));
+				parentElem1 = document.getElementById(parentElemIdStr1);
+
+				RouletteValueBtnIdx += 1;
+				
+			}
+		}
+	}
+}
+
+
+function PickUpArray(Array1, pickUpNum){
+
+	for(i=0; i<pickUpNum; i++){
+		rIdx = getRandom(i, Array1.length-1);
+		
+		temp1 = Array1[i];
+		Array1[i] = Array1[rIdx];
+		Array1[rIdx] = temp1
+	}
+	
+	resultValue = [];
+	
+	for(j=0; j<pickUpNum; j++){
+		resultValue.push(Array1[j]);
+	}
+	
+	return resultValue
+}
+
 
 function getRow(sqIdx){
 	return parseInt(sqIdx / TABLE_COL);
@@ -561,6 +682,59 @@ function getRow(sqIdx){
 
 function getCol(sqIdx){
 	return (sqIdx % TABLE_ROW)
+}
+
+
+function showConfirmedSquare(row1, col1){
+	
+	
+	elemStr1 = "BingoTableSquare" + String((row1+1))+ "_" + String((col1+1));
+	elem1 = document.getElementById(elemStr1);
+	
+	if(g_ConfirmedSquare[row1][col1] == TABLE_VALUE_MITEI){
+		elem1.innerHTML= "<span>未定</span>"
+	}else{
+	
+			
+		str1 = "確定マス<br>";
+		str1 += TABLE_VALUE_STR_LIST[ g_ConfirmedSquare[row1][col1] ]
+		str1 =  "<span>" + str1 + "</span><br>"
+		elem1.innerHTML = str1;
+		
+
+
+		
+
+	}
+			
+
+}
+
+function makeRouletteBtnTagStr(){
+	str2 = "<button onclick=\"RouletteConfirmedSquare(event)\">Roulette</button>"
+    return str2;
+}
+
+function RouletteConfirmedSquare(event){
+	  const button = event.target;
+	  const cell = button.parentNode;
+	  const row = cell.parentNode;
+	  const table = row.parentNode.parentNode; // テーブル要素にアクセス
+
+	  const rowIndex = row.rowIndex;
+	  const cellIndex = cell.cellIndex;
+
+	  console.log("行インデックス:", rowIndex);
+	  console.log("列インデックス:", cellIndex);
+
+		
+		rVal = getRandom(TABLE_VALUE_V1, TABLE_VALUE_C3)
+		g_ConfirmedSquare[rowIndex][cellIndex] = rVal
+		g_TableArray1[rowIndex][cellIndex] = rVal
+		
+		FlipOneSquare( (rowIndex*TABLE_COL+cellIndex) )
+		
+		
 }
 
 function save(){
@@ -629,6 +803,7 @@ function main(){
 
  g_PrevStepTime = new Date()
 
+ InitConfirmedSquare()
  showInitSquare()
  
  g_FlipIdx = -1;
