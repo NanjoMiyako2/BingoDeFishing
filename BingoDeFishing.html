@@ -20,9 +20,12 @@
             <li class="tab tab-04">釣り餌を買う</li>
             <li class="tab tab-05">今日の釣果</li>
             <li class="tab tab-06">セーブ・ロード</li>
-            <li class="tab tab-07">持っている釣り餌</li>
+            <li class="tab tab-07">持っているアイテム</li>
         </ul>
 
+	    <hr>
+	    所持コイン:<span id="UserCoinSpan1"></span>
+	    <hr>
         <!--タブを切り替えて表示するコンテンツ-->
         <div class="tab-contents">
         
@@ -47,6 +50,19 @@
 				    </tr>
 				    				    
 				  </table>
+				  
+				  <br>
+				  <br>
+				  <button id="BingoStartBtn1" onclick="BingoStart()">ビンゴ開始</button>
+				  <br>
+				  <br>
+				  <button id="BingoStopBtn1" onclick="BingoStop()">ビンゴ停止</button>
+				  <br>
+				  <br>
+				  <button id="InitBingoTableBtn1" onclick="InitBingoTable()">初期ビンゴ表をランダム変更</button>
+				  <br>
+				  <br>
+				  
 				  
 				  <hr>
 				  ビンゴログ<br>
@@ -100,6 +116,12 @@
             
             <div class="content tab-07">
 				持っている釣り餌
+				<hr>
+				エサ1:<span id="HavingFishBite1Span"></span><br>
+				エサ2:<span id="HavingFishBite2Span"></span><br>
+				エサ3:<span id="HavingFishBite3Span"></span><br>
+				エサ4:<span id="HavingFishBite4Span"></span><br>
+				エサ5:<span id="HavingFishBite5Span"></span><br>
             	
             </div>
             

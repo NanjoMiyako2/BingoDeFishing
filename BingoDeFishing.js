@@ -40,6 +40,10 @@ const CONFIRM_SQ_NUMBER = 25;
 const CONFIRM_SQ_MIN = 3;
 const CONFIRM_SQ_MAX = 9;
 
+const NEED_COIN_VOL_FOR_ROURLETTE = 1;
+const NEED_COIN_VOL_FOR_INIT_BINGO_TABLE = 30;
+
+const FISH_TYPE_NUM = 3;
 
 const FISH_TYPE1 = 1;
 const FISH_TYPE2 = 2;
@@ -47,6 +51,14 @@ const FISH_TYPE3 = 3;
 
 const FISH_NAME_LIST = ["魚A1", "魚B2" , "魚C3"];
 
+const FISH_TYPE_LIST = [1, 2, 3];
+
+
+g_FishRouletteList = [ [3,2,1],
+					   [0,5,5],
+					   [3,1,0],
+					   [1,1,1],
+					   [4,5,1]]
 
 
 g_FlipIdx = 0;
@@ -71,7 +83,7 @@ class User {
 
 	HavingFishingBites = [0, 0, 0, 0, 0];
 	HavingFish = [0, 0, 0]
-	Coin = 0;
+	Coin = 70;
 
 
 }
@@ -124,12 +136,22 @@ function StartStepExecuteInAdvanceOneStepTab(){
 
 var SEFunc1 = function StepExecute(){
 	let str2 = ""
+
 	if(g_StepExecuteFlg == true){
 		currentTime = new Date()
 		minDiff = (currentTime - g_PrevStepTime) / 1000;
 		g_PassedStep = parseInt(minDiff)
 		setTimeout(SEFunc1, ONE_STEP_SECOND * 1000)
 	}
+	
+	if(g_FlipIdx >= BINGO_IDX_MAX){
+		g_FlipIdx = 0;
+		showInitSquare();
+		FlipOneSquare(g_FlipIdx);
+	}
+	FlipOneSquare(g_FlipIdx);
+	
+
 	
 	
 	BingoFlipCount = parseInt(g_PassedStep / 25);
@@ -146,17 +168,11 @@ var SEFunc1 = function StepExecute(){
 	
 	g_FlipIdx = g_FlipIdx + 1;
 	if(g_FlipIdx >= BINGO_IDX_MAX){
-
 		clearBingoLog();
 		AddTableBonusOnlyOneCell();
 		JudgeBingoHits();
-
-		g_FlipIdx = 0;
-		showInitSquare();
-		
 		
 	}
-	FlipOneSquare(g_FlipIdx);
 
 	if(g_PassedStep >= 1){
 		g_PrevCountStart = 0;
@@ -251,12 +267,12 @@ function JudgeHorizontalHit(){
 	for(var i=0; i<TABLE_ROW; i++){
 	  checkedArray[i] = [];
 	  for(var j=0; j<TABLE_COL; j++){
-	   checkedArray[i][j] = UNCHECKED;
+	   checkedArray[i].push(UNCHECKED);
 	  }
 	}
 	
 	for(i=0; i<TABLE_ROW; i++){
-		for(j=0; j<TABLE_COL-3; j++){
+		for(j=0; j<TABLE_COL-2; j++){
 			if(checkedArray[i][j] == UNCHECKED){
 				checkedArray[i][j] = CHECKED;
 				pivotVal = g_TableArray1[i][j];
@@ -299,11 +315,11 @@ function JudgeVerticalHit(){
 	for(var i=0; i<TABLE_ROW; i++){
 	  checkedArray[i] = [];
 	  for(var j=0; j<TABLE_COL; j++){
-	   checkedArray[i][j] = UNCHECKED;
+	   checkedArray[i].push(UNCHECKED);
 	  }
 	}
 	
-	for(i=0; i<TABLE_ROW-3; i++){
+	for(i=0; i<TABLE_ROW-2; i++){
 		for(j=0; j<TABLE_COL; j++){
 			if(checkedArray[i][j] == UNCHECKED){
 				checkedArray[i][j] = CHECKED;
@@ -346,12 +362,12 @@ function JudgeRightDownHit(){
 	for(var i=0; i<TABLE_ROW; i++){
 	  checkedArray[i] = [];
 	  for(var j=0; j<TABLE_COL; j++){
-	   checkedArray[i][j] = UNCHECKED;
+	   checkedArray[i].push(UNCHECKED);
 	  }
 	}
 	
-	for(i=0; i<TABLE_ROW-3; i++){
-		for(j=0; j<TABLE_COL-3; j++){
+	for(i=0; i<TABLE_ROW-2; i++){
+		for(j=0; j<TABLE_COL-2; j++){
 			if(checkedArray[i][j] == UNCHECKED){
 				checkedArray[i][j] = CHECKED;
 				pivotVal = g_TableArray1[i][j];
@@ -394,12 +410,12 @@ function JudgeLeftDownHit(){
 	for(var i=0; i<TABLE_ROW; i++){
 	  checkedArray[i] = [];
 	  for(var j=0; j<TABLE_COL; j++){
-	   checkedArray[i][j] = UNCHECKED;
+	   checkedArray[i].push(UNCHECKED);
 	  }
 	}
 
 
-	for(i=0; i<TABLE_ROW-3; i++){
+	for(i=0; i<TABLE_ROW-2; i++){
 		for(j=2; j<TABLE_COL; j++){
 			if(checkedArray[i][j] == UNCHECKED){
 				checkedArray[i][j] = CHECKED;
@@ -540,9 +556,25 @@ function FlipOneSquare(sqIdx){
 	
 	elem1.style.backgroundColor = TABLE_VALUE_COLOR_LIST[ g_TableArray1[row1][col1] ]
 	
+	
+	showUserCoinSpan1()
+	
 	return
 }
 
+function showUserCoinSpan1(){
+	elem1=document.getElementById("UserCoinSpan1");
+	elem1.innerHTML = MyUser.Coin;
+}
+
+function showUserHavingFishBiteSpans(){
+
+	for(i=TABLE_VALUE_V1; i<=TABLE_VALUE_V5; i++){
+		str1 = "HavingFishBite"+String(i) + "Span";
+		elem1=document.getElementById(str1);
+		elem1.innerHTML = MyUser.HavingFishingBites[(i-TABLE_VALUE_V1)];
+	}
+}
 
 
 function showInitSquare(){
@@ -685,6 +717,34 @@ function getCol(sqIdx){
 }
 
 
+//エサのタイプIdxからルーレット用パーセント配列と対応する魚タイプリストを作成して返す
+function MakeMaltipleFishingRouletteListForBiteType(biteIdx){
+	enableCatchFishList = [];
+	retFishRouletteList = [];
+	
+	for(i=0; i<FISH_TYPE_NUM; i++){
+		fr = g_FishRouletteList[(biteIdx-1)][i]
+		if(fr > 0){
+			enableCatchFishList.push(FISH_TYPE_LIST[i]);
+			retFishRouletteList.push(fr);
+		}
+	}
+	
+	return {fishnameList:enableCatchFishList, roulettePercentArray:retFishRouletteList}
+}
+
+function FishingByOneBite(biteIdx, fishnameList, roulettePercentArray){
+	
+	
+	percentSumArray1 = makeRouletteArray(roulettePercentArray);
+	rIdx = Roulette2(percentSumArray);
+	
+	MyUser.HavingFisingBites[rIdx] -= 1;
+	return fishnameList[rIdx];  //ルーレットで決定した魚のタイプIDを返す
+	
+}
+
+
 function showConfirmedSquare(row1, col1){
 	
 	
@@ -701,10 +761,6 @@ function showConfirmedSquare(row1, col1){
 		str1 =  "<span>" + str1 + "</span><br>"
 		elem1.innerHTML = str1;
 		
-
-
-		
-
 	}
 			
 
@@ -726,6 +782,14 @@ function RouletteConfirmedSquare(event){
 
 	  console.log("行インデックス:", rowIndex);
 	  console.log("列インデックス:", cellIndex);
+
+		if(MyUser.Coin < NEED_COIN_VOL_FOR_ROURLETTE){
+			str1 = "ルーレットを回すには"+String(NEED_COIN_VOL_FOR_ROURLETTE) +"コイン必要です"
+			alert(str1);
+			return
+		}else{
+			MyUser.Coin -= NEED_COIN_VOL_FOR_ROURLETTE;
+		}
 
 		
 		rVal = getRandom(TABLE_VALUE_V1, TABLE_VALUE_C3)
@@ -787,6 +851,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const arrayTabs = Array.prototype.slice.call(targets);
         const index = arrayTabs.indexOf(this);
         
+        if(index == TAB_IDX_HAVING_ITEM){
+        	showUserHavingFishBiteSpans();
+        }
+        
         document.getElementsByClassName('content')[index].classList.add('is-display');
     };
 }, false);
@@ -800,13 +868,44 @@ function getRandom( min, max ) {
 main();
 
 function main(){
+	showUserCoinSpan1()
+	 g_PrevStepTime = new Date()
 
- g_PrevStepTime = new Date()
+	 InitConfirmedSquare()
+	 showInitSquare()
+	 
+}
 
- InitConfirmedSquare()
- showInitSquare()
- 
- g_FlipIdx = -1;
- StartStepExecuteInAdvanceOneStepTab();
- 
+function InitBingoTable(){
+
+	if(MyUser.Coin < NEED_COIN_VOL_FOR_INIT_BINGO_TABLE){
+		str1 = "ビンゴテーブルを初期化するには"+String(NEED_COIN_VOL_FOR_INIT_BINGO_TABLE)+"コイン必要です"
+		alert(str1);
+		return
+	}else{
+		MyUser.Coin -= NEED_COIN_VOL_FOR_INIT_BINGO_TABLE;
+	}
+
+	
+	g_PrevStepTime = new Date()
+
+	InitConfirmedSquare()
+	showInitSquare()
+	 
+	BingoStop();
+}
+
+function BingoStart(){
+	 g_PrevStepTime = new Date()
+	 
+	 g_FlipIdx = 0;
+	 StartStepExecuteInAdvanceOneStepTab();
+}
+
+function BingoStop(){
+
+	 g_StepExecuteFlg = false
+	 g_PrevStepTime = new Date()
+	 
+	 g_FlipIdx = 0;
 }
