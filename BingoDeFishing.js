@@ -2,12 +2,12 @@ const TAB_IDX_BINGO = 0
 const TAB_IDX_FISHING = 1
 const TAB_IDX_SELL_FISH = 2
 const TAB_IDX_BUY_ITEM = 3
-const TAB_IDX_TODAY_RESULT = 4
+const TAB_IDX_CURRENT_RESULT = 4
 const TAB_IDX_SAVE_LOAD =5
 const TAB_IDX_HAVING_ITEM = 6
 
 //一ステップにかかる秒数
-const ONE_STEP_SECOND = 1;
+const ONE_STEP_SECOND = 5;
 
 const ROULETTE_SQUARE_NUM = 9;
 
@@ -40,8 +40,8 @@ const CONFIRM_SQ_NUMBER = 25;
 const CONFIRM_SQ_MIN = 3;
 const CONFIRM_SQ_MAX = 9;
 
-const NEED_COIN_VOL_FOR_ROURLETTE = 1;
-const NEED_COIN_VOL_FOR_INIT_BINGO_TABLE = 30;
+const NEED_COIN_VOL_FOR_ROURLETTE = 5;
+const NEED_COIN_VOL_FOR_INIT_BINGO_TABLE = 100;
 
 const FISH_TYPE_NUM = 3;
 
@@ -84,7 +84,7 @@ class User {
 
 	HavingFishingBites = [1, 2, 3, 4, 5];
 	HavingFish = [0, 0, 0]
-	Coin = 70;
+	Coin = 150;
 
 
 }
@@ -186,6 +186,54 @@ var SEFunc1 = function StepExecute(){
 
 }
 
+g_FishBitePrice = [1, 3, 6, 10, 14];
+function BuyFishBite(){
+
+	select1 = document.getElementById("BuyBiteKindSelectBox");
+	val1 = g_FishBitePrice[Number(select1.value)-1];
+	
+	textbox1 = document.getElementById("BuyVolTextBox");
+	vol1 = Number(textbox1.value);
+	
+	totalprice = val1 * vol1;
+	
+	if(MyUser.Coin < totalprice){
+		alert("コインが足りません");
+		return
+	}
+	
+	MyUser.Coin -= totalprice;
+	MyUser.HavingFishingBites[(Number(select1.value)-1)] += vol1;
+	
+	str2 = "エサを"+String(totalprice)+"コインで購入しました"
+	alert(str2);
+	
+	showUserHavingFishBiteSpans()
+	showUserCoinSpan1();
+		
+}
+
+
+g_FishPrice = [1, 8, 15];
+
+function SellFish(){
+
+	vol = 0;
+	totalprice = 0;
+	for(i=0; i<MyUser.HavingFish.length; i++){
+		vol = MyUser.HavingFish[i];
+		totalprice += g_FishPrice[i] * vol;
+		MyUser.HavingFish[i] = 0;
+	}
+	MyUser.Coin += totalprice;
+	str1 = "魚を売った<br>"+"総売却金額:"+String(totalprice)+"コイン";	
+	addSellFishLog(str1);
+	
+	showUserCoinSpan1();
+	showUserHavingFishSpans();
+	
+}
+
 function FishingStart(){
 	clearFishingLog();
 	addFishingLog("釣り開始した");
@@ -226,6 +274,20 @@ function FishingStart(){
 	
 	addFishingLog("釣り終えた");
 	
+	
+}
+
+function clearSellFishLog(){
+	elem1 = document.getElementById("SellFishLogSpan1");
+	elem1.innerHTML = "";
+	
+}
+
+function addSellFishLog(str1){
+	elem1 = document.getElementById("SellFishLogSpan1");
+	
+	elemText1 = elem1.innerHTML;
+	elem1.innerHTML = "<span>" + str1 + "</span> <br>" + elemText1
 	
 }
 
@@ -635,6 +697,14 @@ function showUserHavingFishBiteSpans(){
 	}
 }
 
+function showUserHavingFishSpans(){
+
+	for(i=FISH_TYPE1; i<=FISH_TYPE_LIST.length; i++){
+		str1 = "HavingFish"+String(i) + "Span";
+		elem1=document.getElementById(str1);
+		elem1.innerHTML = MyUser.HavingFish[(i-FISH_TYPE1)];
+	}
+}
 
 function showInitSquare(){
 
@@ -832,7 +902,7 @@ function showConfirmedSquare(row1, col1){
 }
 
 function makeRouletteBtnTagStr(){
-	str2 = "<button onclick=\"RouletteConfirmedSquare(event)\">Roulette</button>"
+	str2 = "<button onclick=\"RouletteConfirmedSquare(event)\">Roulette(5Coin)</button>"
     return str2;
 }
 
@@ -889,13 +959,7 @@ function LoadGameDataFromJsonFile(JsonFileText1){
 function load(){
 
 	LoadSaveDataFile();
-	
-	PrintParams();
-	PrintTotalWalk();
-	PrintHavingItems();
-	PrintSoubiHin();
-	PrintHavingKosekis();
-	UnSetButtle();
+
 		
 	alert("ゲームデータをロードしました");
 }
@@ -918,6 +982,8 @@ document.addEventListener('DOMContentLoaded', function () {
         
         if(index == TAB_IDX_HAVING_ITEM){
         	showUserHavingFishBiteSpans();
+        }else if(index == TAB_IDX_CURRENT_RESULT){
+        	showUserHavingFishSpans()
         }
         
         document.getElementsByClassName('content')[index].classList.add('is-display');
