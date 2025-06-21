@@ -21,10 +21,12 @@
             <li class="tab tab-05">釣果(現在持っている魚の数)</li>
             <li class="tab tab-06">セーブ・ロード</li>
             <li class="tab tab-07">持っているアイテム</li>
+            <li class="tab tab-08">999999Coinを解放して寄付</li>
         </ul>
 
 	    <hr>
-	    所持コイン:<span id="UserCoinSpan1"></span>
+	    所持コイン:<span id="UserCoinSpan1"></span><br>
+	    コイン解放回数(寄付回数):<span id="kaihouCount1"></span><br>
 	    <hr>
         <!--タブを切り替えて表示するコンテンツ-->
         <div class="tab-contents">
@@ -171,6 +173,15 @@
 				エサ3:<span id="HavingFishBite3Span"></span><br>
 				エサ4:<span id="HavingFishBite4Span"></span><br>
 				エサ5:<span id="HavingFishBite5Span"></span><br>
+            	
+            </div>
+            
+            <div class="content tab-07">
+            	999999Gを解放
+            	<button onClick="kaihou()" type="button">999999Gを解放して寄付のリンクを表示する</button><br>
+            	<hr>
+            	<a id="kifuLink1" href=""><span id="kaihouSpan1"></span></a><br><br><br>
+            	<br>
             	
             </div>
             

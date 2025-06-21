@@ -5,6 +5,7 @@ const TAB_IDX_BUY_ITEM = 3
 const TAB_IDX_CURRENT_RESULT = 4
 const TAB_IDX_SAVE_LOAD =5
 const TAB_IDX_HAVING_ITEM = 6
+const TAB_IDX_KAIHOU = 7
 
 //一ステップにかかる秒数
 const ONE_STEP_SECOND = 5;
@@ -13,6 +14,8 @@ const ROULETTE_SQUARE_NUM = 9;
 
 const TABLE_ROW = 5;
 const TABLE_COL = 5;
+
+const KAIHOU_COIN = 999999;
 
 const TABLE_VALUE_MITEI = 0;
 const TABLE_VALUE_V1 = 1;
@@ -85,6 +88,8 @@ class User {
 	HavingFishingBites = [1, 2, 3, 4, 5];
 	HavingFish = [0, 0, 0]
 	Coin = 150;
+	
+	KaihouCount=0;
 
 
 }
@@ -212,6 +217,33 @@ function BuyFishBite(){
 	showUserCoinSpan1();
 		
 }
+
+function kaihou(){
+
+	if(MyUser.Coin < KAIHOU_COIN){
+		alert("解放に必要なコインが足りません")
+		
+	}else{
+	
+		if(!window.confirm("本当にコインを解放しますか?")){return}
+		
+		MyUser.Coin -= KAIHOU_COIN;
+		MyUser.KaihouCount++;
+		
+		link1 = document.getElementById("kifuLink1");
+		span1 = document.getElementById("kaihouSpan1");
+		
+		url1 = "https://www.ashinaga.org/donation/";
+		link1.setAttribute('href', url1);
+		span1.innerHTML = "あしなが育英会の寄付用リンク"
+		
+		alert("コインを解放しました");
+		showUserCoinSpan1();
+		showKaihouCount();
+		
+	}
+}
+
 
 
 g_FishPrice = [1, 8, 15];
@@ -688,6 +720,11 @@ function showUserCoinSpan1(){
 	elem1.innerHTML = MyUser.Coin;
 }
 
+function showKaihouCount(){
+	elem1=document.getElementById("kaihouCount1");
+	elem1.innerHTML = MyUser.KaihouCount;
+}
+
 function showUserHavingFishBiteSpans(){
 
 	for(i=TABLE_VALUE_V1; i<=TABLE_VALUE_V5; i++){
@@ -953,7 +990,11 @@ function LoadGameDataFromJsonFile(JsonFileText1){
 	text1 = JsonFileText1
 	
 	MyUser = JSON.parse(text1)
-
+	
+	 showKaihouCount();
+	 showUserCoinSpan1()
+	 showUserHavingFishBiteSpans();
+	 showUserHavingFishSpans();
 }
 
 function load(){
@@ -999,7 +1040,8 @@ function getRandom( min, max ) {
 main();
 
 function main(){
-	showUserCoinSpan1()
+	 showKaihouCount();
+	 showUserCoinSpan1()
 	 g_PrevStepTime = new Date()
 
 	 InitConfirmedSquare()
