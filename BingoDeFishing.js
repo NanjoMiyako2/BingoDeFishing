@@ -1057,6 +1057,7 @@ function InitBingoTable(){
 		return
 	}else{
 		MyUser.Coin -= NEED_COIN_VOL_FOR_INIT_BINGO_TABLE;
+		showUserCoinSpan1();
 	}
 
 	
