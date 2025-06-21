@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ビンゴで釣り</title>
+     <link rel="stylesheet" href="style.css">
+    
+  </head>
+  <body>
+
+
+
+
+    <div class="tab-group">
+        <!--タブ-->
+        <ul class="tab-button">
+            <li class="tab tab-01 is-active">ビンゴ</li>
+            <li class="tab tab-02">釣り</li>
+            <li class="tab tab-03">釣った魚を売る</li>
+            <li class="tab tab-04">釣り餌を買う</li>
+            <li class="tab tab-05">釣果(現在持っている魚の数)</li>
+            <li class="tab tab-06">セーブ・ロード</li>
+            <li class="tab tab-07">持っているアイテム</li>
+        </ul>
+
+	    <hr>
+	    所持コイン:<span id="UserCoinSpan1"></span>
+	    <hr>
+        <!--タブを切り替えて表示するコンテンツ-->
+        <div class="tab-contents">
+        
+            <div class="content tab-01 is-display">
+				ビンゴ<br>
+				
+				 <table border="1" id="BingoTable1" width="600" height="300">
+				    <tr>
+				      <td id="BingoTableSquare1_1"></td> <td id="BingoTableSquare1_2"></td> <td id="BingoTableSquare1_3"></td> <td id="BingoTableSquare1_4"></td> <td id="BingoTableSquare1_5"></td>
+				    </tr>
+				    <tr>
+				      <td id="BingoTableSquare2_1"></td> <td id="BingoTableSquare2_2"></td> <td id="BingoTableSquare2_3"></td> <td id="BingoTableSquare2_4"></td> <td id="BingoTableSquare2_5"></td>
+				    </tr>
+				    <tr>
+				      <td id="BingoTableSquare3_1"></td> <td id="BingoTableSquare3_2"></td> <td id="BingoTableSquare3_3"></td> <td id="BingoTableSquare3_4"></td> <td id="BingoTableSquare3_5"></td>
+				    </tr>
+				    <tr>
+				      <td id="BingoTableSquare4_1"></td> <td id="BingoTableSquare4_2"></td> <td id="BingoTableSquare4_3"></td> <td id="BingoTableSquare4_4"></td> <td id="BingoTableSquare4_5"></td>
+				    </tr>
+				    <tr>
+				      <td id="BingoTableSquare5_1"></td> <td id="BingoTableSquare5_2"></td> <td id="BingoTableSquare5_3"></td> <td id="BingoTableSquare5_4"></td> <td id="BingoTableSquare5_5"></td>
+				    </tr>
+				    				    
+				  </table>
+				  
+				  <br>
+				  <br>
+				  <button id="BingoStartBtn1" onclick="BingoStart()">ビンゴ開始</button>
+				  <br>
+				  <br>
+				  <button id="BingoStopBtn1" onclick="BingoStop()">ビンゴ停止</button>
+				  <br>
+				  <br>
+				  <button id="InitBingoTableBtn1" onclick="InitBingoTable()">初期ビンゴ表をランダム変更(100Coin)</button>
+				  <br>
+				  <br>
+				  
+				  
+				  <hr>
+				  ビンゴログ<br>
+				  <span id="BingoLogSpan1"></span>
+				  <hr>
+            </div>
+            
+            <div class="content tab-02">
+            	釣り<br>
+			  <br>
+			  <br>
+			  <button id="FishingStartBtn1" onclick="FishingStart()">釣り開始</button>
+			  <br>
+			  <br>
+			  
+			  <hr>
+			  釣りログ<br>
+			  <span id="FishingLogSpan1"></span>
+			  <hr>
+            </div>
+            
+            <div class="content tab-03">
+            	釣った魚を売る<br>
+            	魚の値段:<br>
+            	魚1:1コイン<br>
+            	魚2:8コイン<br>
+            	魚3:15コイン<br>
+            	<hr>
+				  <br>
+				  <br>
+				  <button id="SellFishBtn1" onclick="SellFish()">魚を売る</button>
+				  <br>
+				  <br>
+
+			  <hr>
+			  売却ログ<br>
+			  <span id="SellFishLogSpan1"></span>
+			  <hr>
+			    
+            </div>
+            
+            <div class="content tab-04">
+            	釣り餌を買う<br>
+            	<br>
+            	買う釣り餌の種類<br>
+					<select id="BuyBiteKindSelectBox">
+					<option value="1">エサ1(1Coin)</option>
+					<option value="2">エサ2(3Coin)</option>
+					<option value="3">エサ3(6Coin)</option>
+					<option value="4">エサ4(10Coin)</option>
+					<option value="5">エサ5(14Coin)</option>
+					</select>
+            	を
+            	<input  id="BuyVolTextBox" type="text" size="10" value="1">
+            	個買う
+            	
+            	
+            	<hr>
+				  <br>
+				  <br>
+				  <button id="BuyFishBiteBtn1" onclick="BuyFishBite()">釣り餌を買う</button>
+				  <br>
+				  <br>
+            	
+			    
+            </div>
+            
+            <div class="content tab-05">
+            	釣果(現在持っている魚の数)<br>
+				<hr>
+				魚1:<span id="HavingFish1Span"></span><br>
+				魚2:<span id="HavingFish2Span"></span><br>
+				魚3:<span id="HavingFish3Span"></span><br>
+
+            </div>
+            
+            
+            <div class="content tab-06">
+            	セーブ・ロード<br>
+            	
+            	<button onClick="save()" type="button">セーブ</button><br>
+            	<hr>
+            	<hr>
+            	<hr>
+            	
+            	<br>
+            	<br>
+            	<br>
+			  	<form id="myform1">
+			    	<input id="myfile1" type="file" />ロードするファイルを選択<br>
+			  	</form>
+			  	<br>
+			  	<br>
+			  	<br>
+			  	
+            	<button onClick="load()" type="button">ロード</button><br>
+            	
+            	<span id="kankinSpan1"></span><br>
+            </div>
+            
+            <div class="content tab-07">
+				持っている釣り餌
+				<hr>
+				エサ1:<span id="HavingFishBite1Span"></span><br>
+				エサ2:<span id="HavingFishBite2Span"></span><br>
+				エサ3:<span id="HavingFishBite3Span"></span><br>
+				エサ4:<span id="HavingFishBite4Span"></span><br>
+				エサ5:<span id="HavingFishBite5Span"></span><br>
+            	
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <script src="BingoDeFishing.js"></script>
+  </body>
+</html>
