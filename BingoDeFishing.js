@@ -7,7 +7,7 @@ const TAB_IDX_SAVE_LOAD =5
 const TAB_IDX_HAVING_ITEM = 6
 
 //一ステップにかかる秒数
-const ONE_STEP_SECOND = 2;
+const ONE_STEP_SECOND = 1;
 
 const ROULETTE_SQUARE_NUM = 9;
 
@@ -49,6 +49,7 @@ const FISH_TYPE1 = 1;
 const FISH_TYPE2 = 2;
 const FISH_TYPE3 = 3;
 
+const BITE_IDX_LIST = [1, 2, 3, 4, 5]
 const FISH_NAME_LIST = ["魚A1", "魚B2" , "魚C3"];
 
 const FISH_TYPE_LIST = [1, 2, 3];
@@ -81,7 +82,7 @@ for(var i=0; i<TABLE_ROW; i++){
 
 class User {
 
-	HavingFishingBites = [0, 0, 0, 0, 0];
+	HavingFishingBites = [1, 2, 3, 4, 5];
 	HavingFish = [0, 0, 0]
 	Coin = 70;
 
@@ -161,6 +162,7 @@ var SEFunc1 = function StepExecute(){
 			FlipOneSquare(j);
 		}
 		
+		clearBingoLog();
 		AddTableBonusOnlyOneCell();
 		JudgetBingoHits();
 		
@@ -182,6 +184,63 @@ var SEFunc1 = function StepExecute(){
 	
 	
 
+}
+
+function FishingStart(){
+	clearFishingLog();
+	addFishingLog("釣り開始した");
+	
+	
+	catchFishList = [0,0,0];
+	for(i2=0; i2<MyUser.HavingFishingBites.length; i2++){
+		FishBiteVol = MyUser.HavingFishingBites[i2];
+		if(FishBiteVol >= 1){
+			biteName = TABLE_VALUE_STR_LIST[(i2+1)]
+			str1 = biteName + "を" + String(FishBiteVol) + "個使用した"
+			addFishingLog(str1);
+			
+			biteIdx = (BITE_IDX_LIST[i2]-1)
+			retList = MakeMaltipleFishingRouletteListForBiteType(biteIdx)
+			
+			catchFishList = [0, 0, 0]
+			FishingByOneKindBite(biteIdx, retList.fishnameList, retList.roulettePercentArray,FishBiteVol,catchFishList)
+			
+			for(k2=0; k2<FISH_TYPE_LIST.length; k2++){
+				if(catchFishList[k2] >= 1){
+					fishName1 = FISH_NAME_LIST[k2];
+					catchVol = catchFishList[k2];
+					
+					str2 = fishName1 + "を" + catchVol +"匹釣りあげた";
+					addFishingLog(str2);
+					
+				}
+			}
+		}
+	}
+	
+	
+	addFishingLog("持っているエサをすべて使用し終えた");
+	
+	
+
+	
+	addFishingLog("釣り終えた");
+	
+	
+}
+
+function clearFishingLog(){
+	elem1 = document.getElementById("FishingLogSpan1");
+	elem1.innerHTML = "";
+	
+}
+
+function addFishingLog(str1){
+	elem1 = document.getElementById("FishingLogSpan1");
+	
+	elemText1 = elem1.innerHTML;
+	elem1.innerHTML = "<span>" + str1 + "</span> <br>" + elemText1
+	
 }
 
 
@@ -618,7 +677,7 @@ function makeRouletteArray(percentArray){
 	
 	for(i=0; i<percentArray.length; i++){
 		sum_total += percentArray[i];
-		percentSumArray += sum_total;
+		percentSumArray.push(sum_total);
 	}
 	return percentSumArray;
 }
@@ -723,7 +782,7 @@ function MakeMaltipleFishingRouletteListForBiteType(biteIdx){
 	retFishRouletteList = [];
 	
 	for(i=0; i<FISH_TYPE_NUM; i++){
-		fr = g_FishRouletteList[(biteIdx-1)][i]
+		fr = g_FishRouletteList[biteIdx][i]
 		if(fr > 0){
 			enableCatchFishList.push(FISH_TYPE_LIST[i]);
 			retFishRouletteList.push(fr);
@@ -733,14 +792,20 @@ function MakeMaltipleFishingRouletteListForBiteType(biteIdx){
 	return {fishnameList:enableCatchFishList, roulettePercentArray:retFishRouletteList}
 }
 
-function FishingByOneBite(biteIdx, fishnameList, roulettePercentArray){
+function FishingByOneKindBite(biteIdx, fishnameList, roulettePercentArray, vol,catchFishList){
 	
 	
 	percentSumArray1 = makeRouletteArray(roulettePercentArray);
-	rIdx = Roulette2(percentSumArray);
 	
-	MyUser.HavingFisingBites[rIdx] -= 1;
-	return fishnameList[rIdx];  //ルーレットで決定した魚のタイプIDを返す
+	for(i3 = 0; i3 < vol; i3++){
+		rIdx = Roulette2(percentSumArray1);
+		
+		MyUser.HavingFishingBites[biteIdx] -= 1;
+		MyUser.HavingFish[(fishnameList[rIdx]-1)] += 1;
+		catchFishList[(fishnameList[rIdx]-1)] += 1;
+
+
+	}
 	
 }
 
